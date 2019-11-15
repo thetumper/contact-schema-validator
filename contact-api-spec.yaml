@@ -1,0 +1,302 @@
+openapi: "3.0.1"
+info:
+  description: "This is an implementation of Contacts API."
+  version: "0.1"
+  title: "Submit Contacts"
+  contact:
+    email: fake@mydomain.com
+tags:
+  - name: contacts
+    description: "Operations for submitting contacts."
+security:
+  - bearerAuth: []
+servers:
+  - url: /api/
+paths:
+  /contacts:
+    post:
+      description: "Creates an initial contact record"
+      operationId: submitContact
+      parameters:
+        - name: Authorization
+          in: header
+          description: "JWT token authorizing access to the endpoint"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/Contacts"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactsResponse"
+          links:
+            SubmitContact:
+              operationId: submitContact
+              parameters:
+                id: "$response.body#/id"
+              description: "The 'id' value returned in the response can be used as the 'id' parameter in 'GET /contacts/{id}'"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error4xx"
+        # TODO: consider 401 (unauthorized), 403 (forbidden), 404 (not found), 405 (method not allowed), 408 (request timeout), 422 (unprocessable entity)
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error5xx"
+          # TODO: consider 501 (not implemented), 503 (service unavailable), 504 (gateway timeout), 599 (network connect timeout error)
+  /ping:
+    get:
+      description: Pings the API to determine service status
+      operationId: apiPing
+      parameters:
+        - name: Authorization
+          in: header
+          description: JWT token authorizing access to the endpoint
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PingResponse"
+          links:
+            SubmitContact:
+              operationId: apiPing
+              parameters:
+                message: "$response.body#/message"
+              description: "The 'message' value returned in the response describes the status"
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error4xx"
+        # TODO: consider 401 (unauthorized), 403 (forbidden), 404 (not found), 405 (method not allowed), 408 (request timeout), 422 (unprocessable entity)
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error5xx"
+          # TODO: consider 501 (not implemented), 503 (service unavailable), 504 (gateway timeout), 599 (network connect timeout error)
+components:
+  requestBodies:
+    Contacts:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Contacts"
+      description: Set of contact data for a new contact.
+      required: true
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    AddressArrayType:
+      type: object
+      properties:
+        addresses:
+          type: array
+          items:
+            $ref: "#/components/schemas/AddressType"
+          minItems: 1
+          maxItems: 99
+      additionalProperties: false
+      required:
+        - addresses
+    AddressType:
+      type: object
+      properties:
+        line1:
+          type: string
+          description: Address line 1
+          example: "300 E Main St"
+        line2:
+          type: string
+          description: Address line 2
+          example: "Apt. 14"
+        city:
+          type: string
+          description: City, e.g. 'Madison'
+        stateCode:
+          type: string
+          description: State code
+          example: "WI"
+          pattern: "^([A-Z]{2})$"
+        zip5:
+          type: string
+          description: 5-digit ZIP code
+          example: "53780"
+          pattern: "^([0-9]{5})$"
+      additionalProperties: false
+      required:
+        - line1
+        - city
+        - stateCode
+        - zip5
+    ContactMechanisms:
+      type: object
+      anyOf:
+        - $ref: "#/components/schemas/AddressArrayType"
+        - $ref: "#/components/schemas/EmailArrayType"
+        - $ref: "#/components/schemas/PhoneArrayType"
+    EmailArrayType:
+      type: object
+      properties:
+        emails:
+          type: array
+          items:
+            $ref: "#/components/schemas/EmailType"
+          minItems: 1
+          maxItems: 99
+      additionalProperties: false
+      required:
+        - emails
+    EmailType:
+      type: object
+      properties:
+        address:
+          type: string
+          description: Email address
+          format: email
+        type:
+          type: string
+          enum: ["HOME", "WORK"]
+      additionalProperties: false
+      required:
+        - address
+    Contacts:
+      type: object
+      properties:
+        contactMechanisms:
+          $ref: "#/components/schemas/ContactMechanisms"
+        name:
+          $ref: "#/components/schemas/Name"
+      additionalProperties: false
+      required:
+        - contactMechanisms
+        - name
+    Name:
+      type: object
+      properties:
+        first:
+          type: string
+          description: First name, e.g. 'John'
+          maxLength: 10
+        last:
+          type: string
+          description: Last name, e.g. 'Smith'
+          maxLength: 20
+        middle:
+          type: string
+          description: Middle name or initial
+      additionalProperties: false
+      required:
+        - first
+        - last
+    ContactsResponse:
+      type: object
+      properties:
+        contactId:
+          description: "The Contact ID"
+          type: string
+          format: uuid
+      additionalProperties: false
+    PhoneArrayType:
+      type: object
+      properties:
+        phones:
+          type: array
+          items:
+            $ref: "#/components/schemas/PhoneType"
+          minItems: 1
+          maxItems: 99
+      additionalProperties: false
+      required:
+        - phones
+    PhoneType:
+      type: object
+      properties:
+        number:
+          type: string
+          description: Phone number
+        phoneType:
+          type: string
+          enum: ["HOME", "WORK", "CELL"]
+      additionalProperties: false
+      required:
+        - number
+    PingResponse:
+      type: object
+      properties:
+        message:
+          description: "Message describing ping results"
+          type: string
+      additionalProperties: false
+    Error4xx:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: HTTP status code
+          example: 400
+        error:
+          type: string
+          description: HTTP status description
+          example: "Bad Request"
+        code:
+          type: string
+          description: Optional custom error code, used to provide specific error condition.
+        message:
+          type: string
+          description: Optional custom error message, used to provide specific error condition.
+          example: "One or more Validation errors exist in the request"
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                description: Optional error code provided by system raising the validation error
+              message:
+                type: string
+                example: "should have required property first"
+              path:
+                type: string
+                example: ".body.name"
+      additionalProperties: false
+    Error5xx:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: HTTP status code
+          example: 500
+        error:
+          type: string
+          description: HTTP description
+          example: "Internal Server Error"
+        code:
+          type: string
+          description: Optional custom error code, used to provide specific error condition.
+          example: "UI01"
+        message:
+          type: string
+          description: Optional custom error message, used to provide specific error condition.
+          example: "Service unavailable"
+      additionalProperties: false
