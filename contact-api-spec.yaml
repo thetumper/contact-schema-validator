@@ -1,13 +1,13 @@
-openapi: "3.0.1"
+openapi: '3.0.1'
 info:
-  description: "This is an implementation of Contacts API."
-  version: "0.1"
-  title: "Submit Contacts"
+  description: 'This is an implementation of Contacts API.'
+  version: '0.1'
+  title: 'Submit Contacts'
   contact:
     email: fake@mydomain.com
 tags:
   - name: contacts
-    description: "Operations for submitting contacts."
+    description: 'Operations for submitting contacts.'
 security:
   - bearerAuth: []
 servers:
@@ -15,43 +15,43 @@ servers:
 paths:
   /contacts:
     post:
-      description: "Creates an initial contact record"
+      description: 'Creates an initial contact record'
       operationId: submitContact
       parameters:
         - name: Authorization
           in: header
-          description: "JWT token authorizing access to the endpoint"
+          description: 'JWT token authorizing access to the endpoint'
           required: true
           schema:
             type: string
       requestBody:
-        $ref: "#/components/requestBodies/Contacts"
+        $ref: '#/components/requestBodies/Contacts'
       responses:
-        "200":
-          description: "Success"
+        '200':
+          description: 'Success'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ContactsResponse"
+                $ref: '#/components/schemas/ContactsResponse'
           links:
             SubmitContact:
               operationId: submitContact
               parameters:
-                id: "$response.body#/id"
+                id: '$response.body#/id'
               description: "The 'id' value returned in the response can be used as the 'id' parameter in 'GET /contacts/{id}'"
-        "400":
-          description: "Bad request"
+        '400':
+          description: 'Bad request'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error4xx"
+                $ref: '#/components/schemas/Error4xx'
         # TODO: consider 401 (unauthorized), 403 (forbidden), 404 (not found), 405 (method not allowed), 408 (request timeout), 422 (unprocessable entity)
-        "500":
-          description: "Internal server error"
+        '500':
+          description: 'Internal server error'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error5xx"
+                $ref: '#/components/schemas/Error5xx'
           # TODO: consider 501 (not implemented), 503 (service unavailable), 504 (gateway timeout), 599 (network connect timeout error)
   /ping:
     get:
@@ -65,31 +65,31 @@ paths:
           schema:
             type: string
       responses:
-        "200":
-          description: "Success"
+        '200':
+          description: 'Success'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PingResponse"
+                $ref: '#/components/schemas/PingResponse'
           links:
             SubmitContact:
               operationId: apiPing
               parameters:
-                message: "$response.body#/message"
+                message: '$response.body#/message'
               description: "The 'message' value returned in the response describes the status"
-        "400":
-          description: "Bad request"
+        '400':
+          description: 'Bad request'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error4xx"
+                $ref: '#/components/schemas/Error4xx'
         # TODO: consider 401 (unauthorized), 403 (forbidden), 404 (not found), 405 (method not allowed), 408 (request timeout), 422 (unprocessable entity)
-        "500":
-          description: "Internal server error"
+        '500':
+          description: 'Internal server error'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error5xx"
+                $ref: '#/components/schemas/Error5xx'
           # TODO: consider 501 (not implemented), 503 (service unavailable), 504 (gateway timeout), 599 (network connect timeout error)
 components:
   requestBodies:
@@ -97,7 +97,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/Contacts"
+            $ref: '#/components/schemas/Contacts'
       description: Set of contact data for a new contact.
       required: true
   securitySchemes:
@@ -112,7 +112,7 @@ components:
         addresses:
           type: array
           items:
-            $ref: "#/components/schemas/AddressType"
+            $ref: '#/components/schemas/AddressType'
           minItems: 1
           maxItems: 99
       additionalProperties: false
@@ -124,24 +124,24 @@ components:
         line1:
           type: string
           description: Address line 1
-          example: "300 E Main St"
+          example: '300 E Main St'
         line2:
           type: string
           description: Address line 2
-          example: "Apt. 14"
+          example: 'Apt. 14'
         city:
           type: string
           description: City, e.g. 'Madison'
         stateCode:
           type: string
           description: State code
-          example: "WI"
-          pattern: "^([A-Z]{2})$"
+          example: 'WI'
+          pattern: '^([A-Z]{2})$'
         zip5:
           type: string
           description: 5-digit ZIP code
-          example: "53780"
-          pattern: "^([0-9]{5})$"
+          example: '53780'
+          pattern: '^([0-9]{5})$'
       additionalProperties: false
       required:
         - line1
@@ -151,16 +151,16 @@ components:
     ContactMechanisms:
       type: object
       anyOf:
-        - $ref: "#/components/schemas/AddressArrayType"
-        - $ref: "#/components/schemas/EmailArrayType"
-        - $ref: "#/components/schemas/PhoneArrayType"
+        - $ref: '#/components/schemas/AddressArrayType'
+        - $ref: '#/components/schemas/EmailArrayType'
+        - $ref: '#/components/schemas/PhoneArrayType'
     EmailArrayType:
       type: object
       properties:
         emails:
           type: array
           items:
-            $ref: "#/components/schemas/EmailType"
+            $ref: '#/components/schemas/EmailType'
           minItems: 1
           maxItems: 99
       additionalProperties: false
@@ -175,7 +175,7 @@ components:
           format: email
         type:
           type: string
-          enum: ["HOME", "WORK"]
+          enum: ['HOME', 'WORK']
       additionalProperties: false
       required:
         - address
@@ -183,9 +183,9 @@ components:
       type: object
       properties:
         contactMechanisms:
-          $ref: "#/components/schemas/ContactMechanisms"
+          $ref: '#/components/schemas/ContactMechanisms'
         name:
-          $ref: "#/components/schemas/Name"
+          $ref: '#/components/schemas/Name'
       additionalProperties: false
       required:
         - contactMechanisms
@@ -212,7 +212,7 @@ components:
       type: object
       properties:
         contactId:
-          description: "The Contact ID"
+          description: 'The Contact ID'
           type: string
           format: uuid
       additionalProperties: false
@@ -222,7 +222,7 @@ components:
         phones:
           type: array
           items:
-            $ref: "#/components/schemas/PhoneType"
+            $ref: '#/components/schemas/PhoneType'
           minItems: 1
           maxItems: 99
       additionalProperties: false
@@ -236,7 +236,7 @@ components:
           description: Phone number
         phoneType:
           type: string
-          enum: ["HOME", "WORK", "CELL"]
+          enum: ['HOME', 'WORK', 'CELL']
       additionalProperties: false
       required:
         - number
@@ -244,7 +244,7 @@ components:
       type: object
       properties:
         message:
-          description: "Message describing ping results"
+          description: 'Message describing ping results'
           type: string
       additionalProperties: false
     Error4xx:
@@ -257,14 +257,14 @@ components:
         error:
           type: string
           description: HTTP status description
-          example: "Bad Request"
+          example: 'Bad Request'
         code:
           type: string
           description: Optional custom error code, used to provide specific error condition.
         message:
           type: string
           description: Optional custom error message, used to provide specific error condition.
-          example: "One or more Validation errors exist in the request"
+          example: 'One or more Validation errors exist in the request'
         errors:
           type: array
           items:
@@ -275,10 +275,10 @@ components:
                 description: Optional error code provided by system raising the validation error
               message:
                 type: string
-                example: "should have required property first"
+                example: 'should have required property first'
               path:
                 type: string
-                example: ".body.name"
+                example: '.body.name'
       additionalProperties: false
     Error5xx:
       type: object
@@ -290,13 +290,13 @@ components:
         error:
           type: string
           description: HTTP description
-          example: "Internal Server Error"
+          example: 'Internal Server Error'
         code:
           type: string
           description: Optional custom error code, used to provide specific error condition.
-          example: "UI01"
+          example: 'UI01'
         message:
           type: string
           description: Optional custom error message, used to provide specific error condition.
-          example: "Service unavailable"
+          example: 'Service unavailable'
       additionalProperties: false
