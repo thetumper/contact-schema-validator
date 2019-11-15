@@ -47,7 +47,6 @@ describe('ContactSchemaValidator', () => {
 
     test('when an unknown property is included on a contact, the validator should throw an error', () => {
       const contactObject = {
-        contactId: '00000000-0000-0000-0000-000000000001',
         contactMechanisms: {
           addresses: [
             {
@@ -82,7 +81,6 @@ describe('ContactSchemaValidator', () => {
     test('when a required property is not included on a contact, the validator should throw an error', () => {
       const contactObject = {
         // Required property 'city' is omitted from the address.
-        contactId: '00000000-0000-0000-0000-000000000001',
         contactMechanisms: {
           addresses: [
             {
@@ -112,7 +110,6 @@ describe('ContactSchemaValidator', () => {
     test('when a contact has an invalid property value (first name too long), the validator should throw an error', () => {
       // Violates maxLength of 10 for first name
       const contactObject = {
-        contactId: '00000000-0000-0000-0000-000000000001',
         contactMechanisms: {
           addresses: [
             {
@@ -143,7 +140,6 @@ describe('ContactSchemaValidator', () => {
     test('when a contact has an invalid property value (state code regex), the validator should throw an error', () => {
       // Violates pattern for state code
       const contactObject = {
-        contactId: '00000000-0000-0000-0000-000000000001',
         contactMechanisms: {
           addresses: [
             {
