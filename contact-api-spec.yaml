@@ -117,6 +117,10 @@ components:
           maxItems: 99
       required:
         - addresses
+      not:
+        required:
+          - emails
+          - phones
     AddressType:
       type: object
       properties:
@@ -172,6 +176,10 @@ components:
           maxItems: 99
       required:
         - emails
+      not:
+        required:
+          - addresses
+          - phones
     EmailType:
       type: object
       properties:
@@ -233,6 +241,10 @@ components:
           maxItems: 99
       required:
         - phones
+      not:
+        required:
+          - addresses
+          - emails
     PhoneType:
       type: object
       properties:
