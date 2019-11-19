@@ -106,18 +106,6 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    AddressArrayType:
-      type: object
-      properties:
-        addresses:
-          type: array
-          items:
-            $ref: '#/components/schemas/AddressType'
-          minItems: 1
-          maxItems: 99
-      additionalProperties: false
-      required:
-        - addresses
     AddressType:
       type: object
       properties:
@@ -150,22 +138,31 @@ components:
         - zip5
     ContactMechanisms:
       type: object
-      anyOf:
-        - $ref: '#/components/schemas/AddressArrayType'
-        - $ref: '#/components/schemas/EmailArrayType'
-        - $ref: '#/components/schemas/PhoneArrayType'
-    EmailArrayType:
-      type: object
       properties:
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressType'
+          minItems: 1
+          maxItems: 99
         emails:
           type: array
           items:
             $ref: '#/components/schemas/EmailType'
           minItems: 1
           maxItems: 99
+        phones:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneType'
+          minItems: 1
+          maxItems: 99
+      anyOf: [
+        {required: ['addresses']},
+        {required: ['emails']},
+        {required: ['phones']}
+      ]
       additionalProperties: false
-      required:
-        - emails
     EmailType:
       type: object
       properties:

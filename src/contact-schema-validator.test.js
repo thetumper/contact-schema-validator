@@ -12,6 +12,27 @@ import ContactSchemaValidator from './contact-schema-validator';
 describe('ContactSchemaValidator', () => {
   beforeEach(jest.restoreAllMocks);
   describe('#validate', () => {
+    test('when testing a valid contact, no error should be thrown', () => {
+      const contactObject = {
+        contactMechanisms: {
+          addresses: [
+            {
+              line1: '300 E Main St',
+              city: 'Madison',
+              stateCode: 'WI',
+              zip5: '53780',
+            },
+          ],
+        },
+        name: {
+          first: 'John',
+          last: 'Smith',
+        },
+      };
+
+      ContactSchemaValidator.validate(contactObject);
+    });
+
     test('when testing with multiple valid contact mechanisms, no error should be thrown', () => {
       const contactObject = {
         contactMechanisms: {
@@ -82,6 +103,29 @@ describe('ContactSchemaValidator', () => {
         const patternError = _find(err.errors, {
           message: 'should NOT have additional properties',
           params: {additionalProperty: 'social'},
+        });
+        expect(patternError).toBeDefined();
+      }
+    });
+
+    test('when testing a contact without any contact mechanisms, an error should be thrown', () => {
+      const contactObject = {
+        contactMechanisms: {},
+        name: {
+          first: 'John',
+          last: 'Smith',
+        },
+      };
+
+      try {
+        ContactSchemaValidator.validate(contactObject);
+        // Should not get here
+        fail('Expected an error to be thrown.');
+      } catch (err) {
+        expect(err).toBeDefined();
+        const patternError = _find(err.errors, {
+          message: 'should match some schema in anyOf',
+          dataPath: '.contactMechanisms',
         });
         expect(patternError).toBeDefined();
       }
