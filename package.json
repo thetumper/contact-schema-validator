@@ -40,7 +40,7 @@
     "@babel/runtime": "7.9.2",
     "ajv": "6.12.0",
     "js-yaml": "3.13.1",
-    "lodash": "4.17.19"
+    "lodash": "4.17.21"
   },
   "babel": {
     "presets": [
