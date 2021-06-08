@@ -19,7 +19,7 @@ class ContactSchemaValidator {
     // Create validator, add and compile schemas.
     const ajv = new Ajv({allErrors: true});
     const modelNames = Object.getOwnPropertyNames(models);
-    modelNames.forEach(modelName => {
+    modelNames.forEach((modelName) => {
       const modelKey = `#/components/schemas/${modelName}`;
       ajv.addSchema(models[modelName], modelKey);
     });
